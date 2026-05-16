@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Battle of the Bands — University of Alabama</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Mono:wght@400;500&family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --crimson:   #9E1B32;
+    --crimson-d: #740D22;
+    --crimson-l: #C5304A;
+    --white:     #F8F4EE;
+    --off:       #EDE8E1;
+    --gold:      #C4973A;
+    --gray:      #1C1C1C;
+    --mid:       #2D2D2D;
+    --muted:     #5A5A5A;
+    --light:     #9A9A9A;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { background: var(--white); color: var(--gray); font-family: 'DM Mono', monospace; overflow-x: hidden; }
+
+  /* NAV */
+  nav {
+    position: sticky; top: 0; z-index: 200;
+    background: var(--crimson);
+    display: flex; align-items: stretch;
+    border-bottom: 3px solid var(--crimson-d);
+  }
+  .nav-brand {
+    padding: 0 24px;
+    font-family: 'Oswald', sans-serif; font-size: 14px; font-weight: 700;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--white); text-decoration: none;
+    display: flex; align-items: center; gap: 8px;
+    border-right: 1px solid rgba(255,255,255,0.15);
+    white-space: nowrap;
+  }
+  .nav-brand span { color: var(--gold); }
+  .nav-tabs { display: flex; list-style: none; overflow-x: auto; scrollbar-width: none; }
+  .nav-tabs::-webkit-scrollbar { display: none; }
+  .nav-tabs li a {
+    display: flex; align-items: center; height: 100%;
+    padding: 18px 20px;
+    font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase;
+    color: rgba(255,255,255,0.6); text-decoration: none;
+    border-bottom: 3px solid transparent; margin-bottom: -3px;
+    transition: all 0.2s; white-space: nowrap;
+  }
+  .nav-tabs li a:hover, .nav-tabs li a.active {
+    color: var(--white); border-bottom-color: var(--gold);
+    background: rgba(0,0,0,0.15);
+  }
+
+  /* PAGES */
+  .page { display: none; }
+  .page.active { display: block; }
+
+  /* HERO */
+  .hero {
+    background: var(--white); color: var(--gray);
+    min-height: 92vh; display: grid; grid-template-columns: 1fr 1fr; overflow: hidden;
+  }
+  @media (max-width: 768px) { .hero { grid-template-columns: 1fr; min-height: auto; } .hero-visual { height: 240px; } }
+  .hero-text {
+    padding: clamp(48px,8vw,100px) clamp(32px,5vw,72px);
+    display: flex; flex-direction: column; justify-content: center;
+  }
+  .hero-eyebrow {
+    font-size: 10px; letter-spacing: 0.35em; text-transform: uppercase;
+    color: var(--crimson); margin-bottom: 20px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .hero-eyebrow::before { content: ''; width: 28px; height: 1px; background: var(--crimson); }
+  .hero h1 {
+    font-family: 'Oswald', sans-serif;
+    font-size: clamp(54px,8vw,110px); font-weight: 700;
+    line-height: 0.92; text-transform: uppercase; margin-bottom: 32px;
+  }
+  .hero h1 em { font-style: normal; color: var(--crimson-l); }
+  .hero-meta { font-size: 11px; letter-spacing: 0.1em; color: rgba(0,0,0,0.45); line-height: 2.2; margin-bottom: 40px; }
+  .hero-meta strong { color: var(--gray); font-weight: 500; }
+  .hero-ctas { display: flex; gap: 12px; flex-wrap: wrap; }
+  .hero-visual {
+    background: var(--crimson-d); position: relative; overflow: hidden;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .hero-visual::before {
+    content: ''; position: absolute; inset: 0;
+    background: radial-gradient(ellipse at 50% 50%, rgba(158,27,50,0.3) 0%, transparent 70%);
+  }
+  .hero-visual::after {
+    content: ''; position: absolute; inset: 0;
+    background: repeating-linear-gradient(-60deg, transparent 0, transparent 20px, rgba(255,255,255,0.015) 20px, rgba(255,255,255,0.015) 21px);
+  }
+  .vinyl {
+    width: clamp(180px,26vw,340px); height: clamp(180px,26vw,340px);
+    border-radius: 50%;
+    background: radial-gradient(circle at 50% 50%, #111 0%, #111 12%, #1a1a1a 12%, #1a1a1a 13%, #222 13%, #222 100%);
+    border: 4px solid rgba(255,255,255,0.06);
+    animation: spin 8s linear infinite;
+    box-shadow: 0 0 60px rgba(158,27,50,0.5);
+    position: relative; z-index: 1;
+  }
+  .vinyl::after {
+    content: ''; position: absolute; inset: 40%; border-radius: 50%;
+    background: var(--crimson); border: 2px solid rgba(255,255,255,0.2);
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* BUTTONS */
+  .btn {
+    display: inline-block; padding: 13px 30px;
+    font-family: 'DM Mono', monospace; font-size: 11px; font-weight: 500;
+    letter-spacing: 0.15em; text-transform: uppercase; text-decoration: none;
+    border: none; cursor: pointer; transition: all 0.15s;
+  }
+  .btn-crimson { background: var(--crimson); color: var(--white); }
+  .btn-crimson:hover { background: var(--crimson-d); transform: translateY(-2px); }
+  .btn-gold { background: var(--gold); color: var(--gray); }
+  .btn-gold:hover { background: #d4a747; transform: translateY(-2px); }
+  .btn-outline { background: transparent; color: var(--gray); border: 1.5px solid rgba(0,0,0,0.3); }
+  .btn-outline:hover { border-color: var(--gray); background: rgba(0,0,0,0.06); }
+  .btn-outline-dark { background: transparent; color: var(--gray); border: 1.5px solid var(--gray); }
+  .btn-outline-dark:hover { background: var(--white); color: var(--gray); }
+
+  /* TICKER */
+  .ticker { background: var(--crimson); color: var(--white); padding: 10px 0; overflow: hidden; white-space: nowrap; }
+  .ticker-inner { display: inline-block; animation: ticker 28s linear infinite; }
+  .ticker-inner span { font-size: 10px; letter-spacing: 0.25em; text-transform: uppercase; margin-right: 72px; color: rgba(255,255,255,0.8); }
+  .ticker-inner span b { color: var(--gold); }
+  @keyframes ticker { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+  /* LAYOUT */
+  .wrap { max-width: 1200px; margin: 0 auto; padding: 80px 40px; }
+  @media (max-width: 600px) { .wrap { padding: 60px 20px; } }
+  .label {
+    font-size: 9px; letter-spacing: 0.4em; text-transform: uppercase;
+    color: var(--crimson); margin-bottom: 10px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .label::after { content: ''; flex: 1; height: 1px; background: currentColor; opacity: 0.3; max-width: 60px; }
+  .section-title {
+    font-family: 'Oswald', sans-serif; font-size: clamp(36px,5vw,60px);
+    font-weight: 700; text-transform: uppercase; line-height: 1; margin-bottom: 48px;
+  }
+
+  /* RAISED */
+  .raised-bar { background: var(--white); color: var(--gray); text-align: center; padding: 48px 20px; }
+  .raised-label { font-size: 9px; letter-spacing: 0.4em; text-transform: uppercase; opacity: 0.4; margin-bottom: 8px; }
+  .raised-num { font-family: 'Oswald', sans-serif; font-size: clamp(64px,10vw,120px); font-weight: 700; color: var(--gold); line-height: 1; }
+  .raised-goal { font-size: 11px; opacity: 0.35; margin-top: 6px; letter-spacing: 0.15em; }
+  .prog-outer { max-width: 500px; margin: 20px auto 0; height: 3px; background: rgba(255,255,255,0.1); }
+  .prog-fill { height: 100%; background: var(--gold); width: 34%; }
+
+  /* LEADERBOARD */
+  .board { display: flex; flex-direction: column; }
+  .board-row {
+    display: grid; grid-template-columns: 44px 1fr 180px 90px;
+    align-items: center; gap: 16px; padding: 20px 0;
+    border-bottom: 1px solid rgba(0,0,0,0.07); transition: padding-left 0.2s; cursor: default;
+  }
+  .board-row:hover { padding-left: 8px; background: rgba(158,27,50,0.03); }
+  @media (max-width: 600px) { .board-row { grid-template-columns: 36px 1fr 80px; } .bar-track { display: none; } }
+  .rank { font-family: 'Oswald', sans-serif; font-size: 20px; font-weight: 600; text-align: center; color: var(--light); }
+  .board-row.r1 .rank { color: var(--gold); font-size: 26px; }
+  .board-row.r2 .rank { color: #888; }
+  .board-row.r3 .rank { color: #a0714a; }
+  .org-name { font-size: 13px; font-weight: 500; }
+  .org-type { font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--light); margin-top: 2px; }
+  .bar-track { height: 5px; background: rgba(0,0,0,0.08); overflow: hidden; }
+  .bar-fill { height: 100%; background: var(--crimson); transition: width 1.2s cubic-bezier(0.25,1,0.5,1); }
+  .board-row.r1 .bar-fill { background: var(--gold); }
+  .org-amt { font-family: 'Oswald', sans-serif; font-size: 22px; color: var(--crimson); text-align: right; }
+  .board-row.r1 .org-amt { color: var(--gold); }
+
+  /* PACKAGES */
+  .pkg-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px,1fr)); gap: 1px; background: rgba(0,0,0,0.08); border: 1px solid rgba(0,0,0,0.08); }
+  .pkg { background: var(--white); padding: 40px 32px; display: flex; flex-direction: column; transition: transform 0.2s; position: relative; }
+  .pkg:hover { transform: translateY(-4px); z-index: 2; box-shadow: 0 12px 40px rgba(0,0,0,0.12); }
+  .pkg.featured { background: var(--crimson); color: var(--white); }
+  .pkg-tier { font-size: 9px; letter-spacing: 0.3em; text-transform: uppercase; opacity: 0.5; margin-bottom: 16px; }
+  .pkg-name { font-family: 'Oswald', sans-serif; font-size: 38px; font-weight: 700; text-transform: uppercase; line-height: 1; margin-bottom: 6px; }
+  .pkg-price { font-size: 12px; color: var(--crimson); margin-bottom: 24px; font-weight: 500; }
+  .pkg.featured .pkg-price { color: rgba(255,255,255,0.6); }
+  .pkg-bands-num { font-family: 'Oswald', sans-serif; font-size: 60px; font-weight: 700; line-height: 1; color: var(--crimson); }
+  .pkg.featured .pkg-bands-num { color: var(--gold); }
+  .pkg-bands-lbl { font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase; opacity: 0.45; margin-bottom: 28px; margin-top: 2px; }
+  .pkg ul { list-style: none; display: flex; flex-direction: column; gap: 10px; flex: 1; }
+  .pkg li { font-size: 11px; line-height: 1.5; opacity: 0.65; padding-left: 14px; position: relative; }
+  .pkg li::before { content: '—'; position: absolute; left: 0; opacity: 0.5; }
+  .pkg-btn { margin-top: 32px; }
+
+  /* DONATE */
+  .donate-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; background: rgba(0,0,0,0.08); }
+  @media (max-width: 700px) { .donate-grid { grid-template-columns: 1fr; } }
+  .donate-left { background: var(--crimson); color: var(--white); padding: 56px 48px; }
+  .donate-right { background: var(--off); color: var(--gray); padding: 56px 48px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+  @media (max-width: 700px) { .donate-left, .donate-right { padding: 40px 28px; } }
+  .donate-left .label { color: rgba(255,255,255,0.5); }
+  .donate-left .label::after { background: rgba(255,255,255,0.3); }
+  .donate-title { font-family: 'Oswald', sans-serif; font-size: 52px; font-weight: 700; text-transform: uppercase; line-height: 1; margin-bottom: 20px; }
+  .donate-body { font-size: 11px; line-height: 1.9; opacity: 0.65; margin-bottom: 36px; }
+  .venmo-lbl { font-size: 9px; letter-spacing: 0.3em; text-transform: uppercase; opacity: 0.4; margin-bottom: 10px; }
+  .venmo-handle { font-family: 'Oswald', sans-serif; font-size: 44px; color: var(--crimson); letter-spacing: 0.04em; margin-bottom: 20px; } letter-spacing: 0.04em; margin-bottom: 20px; }
+  .qr-box { width: 130px; height: 130px; background: var(--off); border: 2px dashed rgba(0,0,0,0.15); display: flex; align-items: center; justify-content: center; color: var(--gray); font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; line-height: 1.6; text-align: center; margin: 0 auto 20px; }
+  .venmo-note { font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase; opacity: 0.35; }
+
+  /* TABLE */
+  .table-scroll { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  thead tr { border-bottom: 2px solid var(--crimson); }
+  th { padding: 12px 16px; text-align: left; font-size: 9px; letter-spacing: 0.3em; text-transform: uppercase; color: var(--crimson); font-weight: 500; }
+  td { padding: 16px; border-bottom: 1px solid rgba(0,0,0,0.06); }
+  tr:hover td { background: rgba(158,27,50,0.03); }
+  .badge { display: inline-block; padding: 3px 10px; font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase; font-weight: 500; }
+  .b-plat { background: var(--crimson); color: var(--white); }
+  .b-gold { background: var(--gold); color: var(--gray); }
+  .b-silv { background: #ccc; color: var(--gray); }
+  .b-brnz { background: #cd7f32; color: var(--white); }
+
+  /* EVENT PAGE */
+  .event-hero { background: var(--crimson); color: var(--white); padding: 80px 40px; text-align: center; position: relative; overflow: hidden; }
+  .event-hero::before { content: ''; position: absolute; inset: 0; background: repeating-linear-gradient(-45deg, transparent 0, transparent 30px, rgba(0,0,0,0.04) 30px, rgba(0,0,0,0.04) 31px); }
+  .event-hero h2 { font-family: 'Oswald', sans-serif; font-size: clamp(48px,7vw,96px); font-weight: 700; text-transform: uppercase; position: relative; z-index: 1; line-height: 0.95; }
+  .event-hero .sub { font-size: 12px; opacity: 0.65; letter-spacing: 0.2em; text-transform: uppercase; margin-top: 16px; position: relative; z-index: 1; }
+  .date-strip { background: var(--white); color: var(--gray); display: flex; justify-content: center; flex-wrap: wrap; }
+  .date-item { padding: 28px 48px; text-align: center; border-right: 1px solid rgba(0,0,0,0.08); }
+  .date-item:last-child { border-right: none; }
+  .date-num { font-family: 'Oswald', sans-serif; font-size: 32px; font-weight: 700; color: var(--gold); line-height: 1; }
+  .date-lbl { font-size: 9px; letter-spacing: 0.25em; text-transform: uppercase; opacity: 0.5; margin-top: 4px; }
+  .bands-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 2px; background: rgba(0,0,0,0.08); }
+  @media (max-width: 600px) { .bands-grid { grid-template-columns: 1fr; } }
+  .band-card { background: var(--white); padding: 48px 32px; text-align: center; position: relative; overflow: hidden; }
+  .band-card::before { content: attr(data-num); position: absolute; top: -10px; right: 8px; font-family: 'Oswald', sans-serif; font-size: 100px; font-weight: 700; color: var(--off); line-height: 1; }
+  .band-inner { position: relative; z-index: 1; }
+  .band-num { font-size: 9px; letter-spacing: 0.3em; text-transform: uppercase; color: var(--crimson); margin-bottom: 12px; }
+  .band-name { font-family: 'Playfair Display', serif; font-style: italic; font-size: 28px; margin-bottom: 10px; }
+  .band-body { font-size: 11px; color: var(--light); line-height: 1.7; }
+  .expect-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px,1fr)); gap: 32px; }
+  .expect-card { border-left: 3px solid var(--crimson); padding-left: 24px; }
+  .expect-icon { font-size: 28px; margin-bottom: 12px; }
+  .expect-title { font-family: 'Oswald', sans-serif; font-size: 20px; font-weight: 600; text-transform: uppercase; margin-bottom: 10px; }
+  .expect-body { font-size: 11px; line-height: 1.8; color: var(--muted); }
+  .tbd-tag { display: inline-block; background: rgba(158,27,50,0.07); border: 1px dashed var(--crimson); color: var(--crimson); font-size: 9px; padding: 3px 10px; letter-spacing: 0.15em; text-transform: uppercase; margin-top: 6px; }
+
+  /* SCHOLARSHIP PAGE */
+  .schol-hero { background: var(--white); color: var(--gray); padding: 80px 40px; position: relative; overflow: hidden; }
+  .schol-hero::after { content: 'ESPY'; position: absolute; right: -10px; bottom: -40px; font-family: 'Oswald', sans-serif; font-size: 200px; font-weight: 700; color: rgba(255,255,255,0.08); line-height: 1; pointer-events: none; }
+  .schol-hero-inner { max-width: 1200px; margin: 0 auto; position: relative; z-index: 1; }
+  .schol-hero h2 { font-family: 'Oswald', sans-serif; font-size: clamp(40px,6vw,80px); font-weight: 700; text-transform: uppercase; line-height: 1; margin-bottom: 20px; }
+  .schol-hero p { font-size: 12px; line-height: 1.9; max-width: 620px; opacity: 0.6; }
+  .schol-hero .gold { color: var(--gold); }
+  .schol-stats { display: grid; grid-template-columns: repeat(3,1fr); gap: 1px; background: rgba(0,0,0,0.08); margin-bottom: 56px; }
+  .schol-stat { background: var(--white); border: 1px solid rgba(0,0,0,0.06); padding: 32px 24px; text-align: center; }
+  .schol-stat-num { font-family: 'Oswald', sans-serif; font-size: 40px; font-weight: 700; color: var(--crimson); }
+  .schol-stat-lbl { font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--light); margin-top: 6px; line-height: 1.5; }
+  .schol-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: start; }
+  @media (max-width: 700px) { .schol-grid { grid-template-columns: 1fr; } .schol-stats { grid-template-columns: 1fr; } }
+  .prose { font-size: 12px; line-height: 2; color: var(--muted); }
+  .prose p + p { margin-top: 16px; }
+  .callout { background: rgba(158,27,50,0.06); border-left: 3px solid var(--crimson); padding: 20px 24px; margin: 24px 0; font-size: 12px; line-height: 1.8; color: var(--gray); font-style: italic; }
+  .need-list { list-style: none; margin: 16px 0 24px; display: flex; flex-direction: column; gap: 10px; }
+  .need-list li { display: flex; gap: 12px; font-size: 11px; line-height: 1.6; }
+  .need-list li::before { content: '—'; color: var(--crimson); flex-shrink: 0; }
+
+  /* PRIZES PAGE */
+  .prize-hero { background: var(--gold); padding: 80px 40px; text-align: center; position: relative; overflow: hidden; }
+  .prize-hero h2 { font-family: 'Oswald', sans-serif; font-size: clamp(52px,8vw,100px); font-weight: 700; text-transform: uppercase; color: var(--gray); line-height: 0.95; position: relative; z-index: 1; }
+  .prize-hero .sub { font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(0,0,0,0.45); margin-top: 12px; position: relative; z-index: 1; }
+  .prize-hero::before { content: '🏆'; position: absolute; font-size: 300px; top: -60px; right: -40px; opacity: 0.08; }
+  .prizes-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; background: rgba(0,0,0,0.08); }
+  @media (max-width: 700px) { .prizes-grid { grid-template-columns: 1fr; } }
+  .prize-col { background: var(--white); padding: 56px 48px; }
+  @media (max-width: 600px) { .prize-col { padding: 36px 24px; } }
+  .prize-col-title { font-family: 'Oswald', sans-serif; font-size: 26px; font-weight: 700; text-transform: uppercase; margin-bottom: 32px; padding-bottom: 16px; border-bottom: 2px solid var(--crimson); }
+  .prize-item { display: flex; gap: 20px; align-items: flex-start; padding: 20px 0; border-bottom: 1px solid rgba(0,0,0,0.06); }
+  .prize-medal { font-family: 'Oswald', sans-serif; font-size: 28px; font-weight: 700; color: var(--light); min-width: 36px; }
+  .prize-item.p1 .prize-medal { color: var(--gold); }
+  .prize-item.p2 .prize-medal { color: #888; }
+  .prize-item.p3 .prize-medal { color: #a0714a; }
+  .prize-name { font-size: 13px; font-weight: 500; margin-bottom: 4px; }
+  .prize-desc { font-size: 10px; color: var(--light); letter-spacing: 0.05em; line-height: 1.6; }
+
+  /* FOOTER */
+  footer { background: var(--off); color: rgba(0,0,0,0.35); padding: 32px 40px; text-align: center; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; }
+  footer .c { color: var(--crimson); }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="javascript:void(0)" class="nav-brand" onclick="return showPage('home')">🎸 <span>BOTB</span> '25</a>
+  <ul class="nav-tabs">
+    <li><a href="javascript:void(0)" onclick="return showPage('home')"        id="tab-home"        class="active">Home</a></li>
+    <li><a href="javascript:void(0)" onclick="return showPage('event')"       id="tab-event">The Event</a></li>
+    <li><a href="javascript:void(0)" onclick="return showPage('scholarship')" id="tab-scholarship">The Cause</a></li>
+    <li><a href="javascript:void(0)" onclick="return showPage('sponsors')"    id="tab-sponsors">Sponsors</a></li>
+    <li><a href="javascript:void(0)" onclick="return showPage('prizes')"      id="tab-prizes">Prizes</a></li>
+    <li><a href="javascript:void(0)" onclick="return showPage('donate')"      id="tab-donate">Donate</a></li>
+  </ul>
+</nav>
+
+<!-- HOME -->
+<div class="page active" id="page-home">
+  <div class="hero">
+    <div class="hero-text">
+      <div class="hero-eyebrow">University of Alabama · Greek Life</div>
+      <h1>BATTLE<br>OF THE<br><em>BANDS</em></h1>
+      <div class="hero-meta">
+        <div><strong>November 15, 2025</strong></div>
+        <div><strong>Gillette's</strong> · Tuscaloosa, AL</div>
+        <div>Benefiting the <strong>Joe Espy SGA Scholarship Fund</strong></div>
+      </div>
+      <div class="hero-ctas">
+        <a href="javascript:void(0)" class="btn btn-gold" onclick="return showPage('donate')">Donate Now</a>
+        <a href="javascript:void(0)" class="btn btn-outline" onclick="return showPage('sponsors')">View Packages</a>
+      </div>
+    </div>
+    <div class="hero-visual"><div class="vinyl"></div></div>
+  </div>
+
+  <div class="ticker">
+    <div class="ticker-inner">
+      <span>🎸 Battle of the Bands 2025</span>
+      <span><b>Nov 15</b> · Gillette's · Tuscaloosa</span>
+      <span>🏆 Compete for your chapter</span>
+      <span>Benefiting the <b>Joe Espy SGA Scholarship Fund</b></span>
+      <span>3 Bands · 1 Winner · Roll Tide 🐘</span>
+      <span>🎸 Battle of the Bands 2025</span>
+      <span><b>Nov 15</b> · Gillette's · Tuscaloosa</span>
+      <span>🏆 Compete for your chapter</span>
+      <span>Benefiting the <b>Joe Espy SGA Scholarship Fund</b></span>
+      <span>3 Bands · 1 Winner · Roll Tide 🐘</span>
+    </div>
+  </div>
+
+  <div class="raised-bar">
+    <div class="raised-label">Total Raised</div>
+    <div class="raised-num">$3,400</div>
+    <div class="raised-goal">Goal: $10,000</div>
+    <div class="prog-outer"><div class="prog-fill"></div></div>
+  </div>
+
+  <div style="background:var(--off)">
+    <div class="wrap">
+      <div class="label">Greek Life Rankings</div>
+      <div class="section-title">Who's Leading?</div>
+      <div class="board" id="lb-home"></div>
+      <div style="margin-top:32px">
+        <a href="javascript:void(0)" class="btn btn-outline-dark" onclick="return showPage('sponsors')">View Sponsorship Packages →</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- EVENT -->
+<div class="page" id="page-event">
+  <div class="event-hero">
+    <h2>The Event</h2>
+    <div class="sub">What to Expect on November 15th</div>
+  </div>
+
+  <div class="date-strip">
+    <div class="date-item"><div class="date-num">NOV 15</div><div class="date-lbl">Date · 2025</div></div>
+    <div class="date-item"><div class="date-num">Gillette's</div><div class="date-lbl">Venue · Tuscaloosa, AL</div></div>
+    <div class="date-item"><div class="date-num">3</div><div class="date-lbl">Competing Bands</div></div>
+    <div class="date-item"><div class="date-num">TBD</div><div class="date-lbl">Doors Open</div></div>
+  </div>
+
+  <div class="wrap" style="padding-bottom:40px">
+    <div class="label">Competing</div>
+    <div class="section-title">The Bands</div>
+    <div class="bands-grid">
+      <div class="band-card" data-num="1">
+        <div class="band-inner">
+          <div class="band-num">Band No. 1</div>
+          <div class="band-name">TBA</div>
+          <div class="band-body">Details to be announced.<br>Stay tuned!</div>
+          <div class="tbd-tag" style="margin-top:10px">Coming Soon</div>
+        </div>
+      </div>
+      <div class="band-card" data-num="2">
+        <div class="band-inner">
+          <div class="band-num">Band No. 2</div>
+          <div class="band-name">TBA</div>
+          <div class="band-body">Details to be announced.<br>Stay tuned!</div>
+          <div class="tbd-tag" style="margin-top:10px">Coming Soon</div>
+        </div>
+      </div>
+      <div class="band-card" data-num="3">
+        <div class="band-inner">
+          <div class="band-num">Band No. 3</div>
+          <div class="band-name">TBA</div>
+          <div class="band-body">Details to be announced.<br>Stay tuned!</div>
+          <div class="tbd-tag" style="margin-top:10px">Coming Soon</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="background:var(--off)">
+    <div class="wrap">
+      <div class="label">Event Details</div>
+      <div class="section-title">What to Expect</div>
+      <div class="expect-grid">
+        <div class="expect-card">
+          <div class="expect-icon">🎟️</div>
+          <div class="expect-title">Entry Bands</div>
+          <div class="expect-body">Your sponsorship package comes with wristbands for event entry. Each band = one attendee. Bring your bands to the door. <span class="tbd-tag">More info coming</span></div>
+        </div>
+        <div class="expect-card">
+          <div class="expect-icon">🎵</div>
+          <div class="expect-title">Live Competition</div>
+          <div class="expect-body">Three bands go head-to-head live. Judging format and audience voting details to be announced. <span class="tbd-tag">Coming Soon</span></div>
+        </div>
+        <div class="expect-card">
+          <div class="expect-icon">🍻</div>
+          <div class="expect-title">Venue: Gillette's</div>
+          <div class="expect-body">Held at Gillette's in Tuscaloosa. Full bar, great sound, and the best crowd Greek life has to offer. <span class="tbd-tag">More info coming</span></div>
+        </div>
+        <div class="expect-card">
+          <div class="expect-icon">💵</div>
+          <div class="expect-title">Night-Of Donations</div>
+          <div class="expect-body">Can't sponsor ahead of time? Donate at the door on the night of the event. Every dollar goes to the Joe Espy Fund. <span class="tbd-tag">Details TBD</span></div>
+        </div>
+        <div class="expect-card">
+          <div class="expect-icon">🏆</div>
+          <div class="expect-title">Greek Life Prizes</div>
+          <div class="expect-body">The chapter that raises the most wins Greek points toward block seating and more. See the Prizes tab for details. <span class="tbd-tag">Being Finalized</span></div>
+        </div>
+        <div class="expect-card">
+          <div class="expect-icon">📍</div>
+          <div class="expect-title">More Details TBA</div>
+          <div class="expect-body">Schedule, parking, dress code, and more will be posted here as we get closer to November 15th. <span class="tbd-tag">Check Back Soon</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SCHOLARSHIP -->
+<div class="page" id="page-scholarship">
+  <div class="schol-hero">
+    <div class="schol-hero-inner">
+      <div class="label" style="color:var(--gold)">Where Your Money Goes</div>
+      <h2>The <span class="gold">Joe Espy</span><br>SGA Scholarship</h2>
+      <p>Every dollar raised at Battle of the Bands goes directly to an emergency scholarship fund that supports University of Alabama students when life throws the unexpected at them.</p>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <div class="schol-stats">
+      <div class="schol-stat"><div class="schol-stat-num">$0</div><div class="schol-stat-lbl">Minimum to apply</div></div>
+      <div class="schol-stat"><div class="schol-stat-num">SGA</div><div class="schol-stat-lbl">Administered by Student Govt</div></div>
+      <div class="schol-stat"><div class="schol-stat-num">Fast</div><div class="schol-stat-lbl">Emergency response, not months away</div></div>
+    </div>
+
+    <div class="schol-grid">
+      <div>
+        <div class="label">About the Fund</div>
+        <div class="section-title" style="margin-bottom:24px">What Is It?</div>
+        <div class="prose">
+          <p>The Joe Espy SGA Scholarship Fund is a need-based emergency scholarship administered by the University of Alabama's Student Government Association. It exists to provide immediate financial relief to UA students facing unexpected hardship — the kind of sudden crisis that can derail an entire semester or worse.</p>
+          <p>Unlike traditional scholarships that reward merit months in advance, the Espy Fund is built for <em>right now</em>. Students in crisis can apply and receive assistance quickly, because some situations simply can't wait.</p>
+          <div class="callout">"Students in need of essential financial assistance due to a temporary hardship or unexpected emergency are encouraged to apply for a need-based scholarship award from the Joe Espy SGA Scholarship Fund." — UA Student Care & Well-Being</div>
+          <p>The fund is available to both full-time and part-time UA students throughout the academic term, with applications opening after classes begin each semester.</p>
+        </div>
+      </div>
+
+      <div>
+        <div class="label">Who It Helps</div>
+        <div class="section-title" style="margin-bottom:24px">Who Can Apply?</div>
+        <div class="prose"><p>Any enrolled UA student facing a documented, sudden financial emergency is eligible. The kinds of hardships covered include:</p></div>
+        <ul class="need-list">
+          <li>Sudden loss of income or family financial support</li>
+          <li>Unexpected medical or mental health expenses</li>
+          <li>Housing or food insecurity caused by an unforeseen event</li>
+          <li>Natural disasters affecting a student's primary residence</li>
+          <li>Death in the immediate family accompanied by financial hardship</li>
+          <li>Any other documented crisis placing a student in temporary financial distress</li>
+        </ul>
+        <div class="prose"><p>Each application is reviewed individually by an SGA committee — the goal is to make sure students get the actual help they need, quickly.</p></div>
+      </div>
+    </div>
+
+    <div style="margin-top:56px; padding-top:56px; border-top:1px solid rgba(0,0,0,0.08)">
+      <div class="label">Why It Matters</div>
+      <div class="section-title">Your Impact</div>
+      <div style="max-width:680px">
+        <div class="prose">
+          <p>College is hard enough under normal circumstances. But for students who are already stretched thin, one unexpected event — a medical bill, a job loss, a family emergency — can be the difference between staying enrolled and dropping out entirely.</p>
+          <p>The Joe Espy Fund exists to be that lifeline. When you sponsor Battle of the Bands, you're not just buying wristbands and putting your chapter's name in lights. You're directly contributing to a fund that keeps fellow Crimson Tide students in school and on track to graduate.</p>
+          <p>Greek life has always been about more than rankings and points. This is a chance to prove it — and have an amazing time doing it.</p>
+        </div>
+        <div style="margin-top:32px">
+          <a href="javascript:void(0)" class="btn btn-crimson" onclick="return showPage('donate')">Support the Fund →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SPONSORS -->
+<div class="page" id="page-sponsors">
+  <div class="wrap" style="padding-bottom:0">
+    <div class="label">Sponsorship Tiers</div>
+    <div class="section-title">Pick Your Package</div>
+  </div>
+
+  <div style="padding:0 40px 80px; max-width:1240px; margin:0 auto">
+    <div class="pkg-grid">
+      <div class="pkg">
+        <span class="pkg-tier">Tier 1</span>
+        <div class="pkg-name">Bronze</div>
+        <div class="pkg-price">$250</div>
+        <div class="pkg-bands-num">10</div>
+        <div class="pkg-bands-lbl">Entry Bands</div>
+        <ul>
+          <li>10 wristbands for event entry</li>
+          <li>Name on the sponsor board</li>
+          <li>Social media shoutout</li>
+          <li>Leaderboard listing</li>
+        </ul>
+        <div class="pkg-btn"><a href="javascript:void(0)" class="btn btn-outline-dark" onclick="return showPage('donate')">Select Bronze</a></div>
+      </div>
+
+      <div class="pkg">
+        <span class="pkg-tier">Tier 2</span>
+        <div class="pkg-name">Silver</div>
+        <div class="pkg-price">$500</div>
+        <div class="pkg-bands-num">25</div>
+        <div class="pkg-bands-lbl">Entry Bands</div>
+        <ul>
+          <li>25 wristbands for event entry</li>
+          <li>Logo on event materials</li>
+          <li>Dedicated social post</li>
+          <li>Priority entry to venue</li>
+          <li>Leaderboard listing</li>
+        </ul>
+        <div class="pkg-btn"><a href="javascript:void(0)" class="btn btn-outline-dark" onclick="return showPage('donate')">Select Silver</a></div>
+      </div>
+
+      <div class="pkg featured">
+        <span class="pkg-tier">⭐ Most Popular — Tier 3</span>
+        <div class="pkg-name" style="color:var(--white)">Gold</div>
+        <div class="pkg-price">$1,000</div>
+        <div class="pkg-bands-num">60</div>
+        <div class="pkg-bands-lbl">Entry Bands</div>
+        <ul>
+          <li style="opacity:.8">60 wristbands for event entry</li>
+          <li style="opacity:.8">Stage banner placement</li>
+          <li style="opacity:.8">Featured on all promo materials</li>
+          <li style="opacity:.8">VIP entry + reserved section</li>
+          <li style="opacity:.8">Chapter name announced at the show</li>
+        </ul>
+        <div class="pkg-btn"><a href="javascript:void(0)" class="btn btn-gold" onclick="return showPage('donate')">Select Gold</a></div>
+      </div>
+
+      <div class="pkg">
+        <span class="pkg-tier">Tier 4 — Presenting</span>
+        <div class="pkg-name">Platinum</div>
+        <div class="pkg-price">$2,500+</div>
+        <div class="pkg-bands-num">150+</div>
+        <div class="pkg-bands-lbl">Entry Bands</div>
+        <ul>
+          <li>150+ wristbands for event entry</li>
+          <li>Presenting sponsor title</li>
+          <li>Stage naming rights</li>
+          <li>Full promo suite across all channels</li>
+          <li>Custom package negotiable</li>
+        </ul>
+        <div class="pkg-btn"><a href="javascript:void(0)" class="btn btn-crimson" onclick="return showPage('donate')">Select Platinum</a></div>
+      </div>
+    </div>
+  </div>
+
+  <div style="background:var(--off)">
+    <div class="wrap">
+      <div class="label">Confirmed Sponsors</div>
+      <div class="section-title">Who's In?</div>
+      <div class="table-scroll">
+        <table>
+          <thead><tr>
+            <th>#</th><th>Chapter / Org</th><th>Type</th><th>Package</th><th>Bands</th><th>Amount</th>
+          </tr></thead>
+          <tbody id="sponsor-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PRIZES -->
+<div class="page" id="page-prizes">
+  <div class="prize-hero">
+    <h2>Prizes &<br>Awards</h2>
+    <div class="sub">For the bands. For the chapters. For the winners.</div>
+  </div>
+
+  <div style="padding:40px 40px 80px; max-width:1240px; margin:0 auto">
+    <div class="prizes-grid">
+      <div class="prize-col">
+        <div class="label">Battle of the Bands</div>
+        <div class="prize-col-title">Band Prizes</div>
+        <div class="prize-item p1">
+          <div class="prize-medal">1st</div>
+          <div><div class="prize-name">Champion Band</div><div class="prize-desc">Prize TBD — to be announced closer to the event.</div><div class="tbd-tag" style="margin-top:6px">TBD</div></div>
+        </div>
+        <div class="prize-item p2">
+          <div class="prize-medal">2nd</div>
+          <div><div class="prize-name">Runner-Up</div><div class="prize-desc">Prize TBD</div><div class="tbd-tag" style="margin-top:6px">TBD</div></div>
+        </div>
+        <div class="prize-item p3">
+          <div class="prize-medal">3rd</div>
+          <div><div class="prize-name">Third Place</div><div class="prize-desc">Prize TBD</div><div class="tbd-tag" style="margin-top:6px">TBD</div></div>
+        </div>
+        <div style="margin-top:24px; font-size:11px; color:var(--light); line-height:1.8">Judging criteria and audience voting format to be announced. Bring your chapter and bring the noise.</div>
+      </div>
+
+      <div class="prize-col" style="background:var(--off)">
+        <div class="label">Greek Life Competition</div>
+        <div class="prize-col-title">Sponsorship<br>Prizes</div>
+        <div class="prize-item p1">
+          <div class="prize-medal">1st</div>
+          <div>
+            <div class="prize-name">Top Fundraising Chapter</div>
+            <div class="prize-desc">Greek points toward block seating + additional prize being finalized.</div>
+            <div class="tbd-tag" style="margin-top:6px">Being Finalized</div>
+          </div>
+        </div>
+        <div class="prize-item p2">
+          <div class="prize-medal">2nd</div>
+          <div><div class="prize-name">Second-Highest Donor</div><div class="prize-desc">Greek points + recognition. Details TBD.</div><div class="tbd-tag" style="margin-top:6px">TBD</div></div>
+        </div>
+        <div class="prize-item p3">
+          <div class="prize-medal">3rd</div>
+          <div><div class="prize-name">Third-Highest Donor</div><div class="prize-desc">Recognition + prize TBD.</div><div class="tbd-tag" style="margin-top:6px">TBD</div></div>
+        </div>
+        <div style="margin-top:24px; background:rgba(158,27,50,0.06); border-left:3px solid var(--crimson); padding:16px 20px; font-size:11px; line-height:1.8">
+          <strong>How it works:</strong> Total chapter donations = your leaderboard rank. The more you give, the more Greek points you earn. Final prize structure will be posted here once confirmed.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- DONATE -->
+<div class="page" id="page-donate">
+  <div class="wrap" style="padding-bottom:0">
+    <div class="label">Give Now</div>
+    <div class="section-title">Donate to the Cause</div>
+  </div>
+
+  <div style="padding:0 40px 80px; max-width:1240px; margin:0 auto">
+    <div class="donate-grid">
+      <div class="donate-left">
+        <div class="label">Direct Donation</div>
+        <div class="donate-title">Send It<br>Via Venmo</div>
+        <p class="donate-body">
+          Every dollar goes directly to the Joe Espy SGA Scholarship Fund at the University of Alabama — supporting students facing unexpected financial hardship.
+          <br><br>
+          When you send your donation, include your <strong>chapter name</strong> and <strong>package tier</strong> in the Venmo note so we can track your contribution and update the leaderboard.
+          <br><br>
+          Example: <em>"Kappa Sig — Gold Package"</em>
+        </p>
+        <a href="https://venmo.com/YOUR-VENMO-HERE" target="_blank" class="btn btn-gold">Open Venmo →</a>
+      </div>
+      <div class="donate-right">
+        <div class="venmo-lbl">Send Payment To</div>
+        <div class="venmo-handle">@YourVenmo</div>
+        <div class="qr-box">Add QR<br>Code<br>Here</div>
+        <div class="venmo-note">Note: Chapter Name + Package Tier</div>
+        <div style="margin-top:28px; width:100%">
+          <a href="javascript:void(0)" class="btn btn-crimson" style="width:100%; text-align:center; display:block" onclick="return showPage('sponsors')">← View Packages First</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="background:var(--off)">
+    <div class="wrap">
+      <div class="label">Live Rankings</div>
+      <div class="section-title">Current Standings</div>
+      <div class="board" id="lb-donate"></div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  Battle of the Bands 2025 · <span class="c">University of Alabama</span> · Benefiting the Joe Espy SGA Scholarship Fund<br>
+  <span style="color:rgba(0,0,0,0.25); margin-top:8px; display:block">Questions? Contact the organizing committee · All donations tracked on this page</span>
+</footer>
+
+<script>
+const sponsors = [
+  { name:"Kappa Kappa Gamma",  type:"Sorority",   pkg:"Platinum", bands:150, amount:2500 },
+  { name:"Delta Tau Delta",    type:"Fraternity", pkg:"Gold",     bands:60,  amount:1000 },
+  { name:"Pi Beta Phi",        type:"Sorority",   pkg:"Gold",     bands:60,  amount:1000 },
+  { name:"Sigma Chi",          type:"Fraternity", pkg:"Silver",   bands:25,  amount:500  },
+  { name:"Alpha Chi Omega",    type:"Sorority",   pkg:"Bronze",   bands:10,  amount:250  },
+  { name:"Beta Theta Pi",      type:"Fraternity", pkg:"Bronze",   bands:10,  amount:150  },
+];
+
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-tabs a').forEach(a => a.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  document.getElementById('tab-' + id).classList.add('active');
+  window.scrollTo({ top: 0 });
+  return false;
+}
+
+const maxAmt = sponsors[0].amount;
+
+function renderLeaderboard(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.innerHTML = '';
+  sponsors.forEach((s, i) => {
+    const pct = Math.round((s.amount / maxAmt) * 100);
+    const rc = i===0?'r1':i===1?'r2':i===2?'r3':'';
+    const row = document.createElement('div');
+    row.className = `board-row ${rc}`;
+    row.innerHTML = `
+      <div class="rank">${i+1}</div>
+      <div><div class="org-name">${s.name}</div><div class="org-type">${s.type}</div></div>
+      <div class="bar-track"><div class="bar-fill" data-pct="${pct}" style="width:0%"></div></div>
+      <div class="org-amt">$${s.amount.toLocaleString()}</div>
+    `;
+    el.appendChild(row);
+  });
+  setTimeout(() => el.querySelectorAll('.bar-fill').forEach(b => b.style.width = b.dataset.pct + '%'), 120);
+}
+
+renderLeaderboard('lb-home');
+renderLeaderboard('lb-donate');
+
+const pkgBadge = p => {
+  const m = { Platinum:'b-plat', Gold:'b-gold', Silver:'b-silv', Bronze:'b-brnz' };
+  return `<span class="badge ${m[p]||''}">${p}</span>`;
+};
+const tb = document.getElementById('sponsor-tbody');
+sponsors.forEach((s,i) => {
+  const tr = document.createElement('tr');
+  tr.innerHTML = `
+    <td style="opacity:.35">${i+1}</td>
+    <td style="font-weight:500">${s.name}</td>
+    <td style="font-size:10px;color:var(--light)">${s.type}</td>
+    <td>${pkgBadge(s.pkg)}</td>
+    <td style="font-family:'Oswald',sans-serif;font-size:22px;color:var(--crimson)">${s.bands}</td>
+    <td style="font-family:'Oswald',sans-serif;font-size:22px">$${s.amount.toLocaleString()}</td>
+  `;
+  tb.appendChild(tr);
+});
+</script>
+</body>
+</html>
